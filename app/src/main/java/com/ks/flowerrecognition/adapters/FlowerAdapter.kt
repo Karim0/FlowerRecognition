@@ -1,11 +1,13 @@
 package com.example.myapplication.Entities
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ks.flowerrecognition.FlowerDescActivity
 import com.ks.flowerrecognition.R
 import com.ks.flowerrecognition.entities.Flower
 
@@ -13,9 +15,12 @@ class FlowerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: ArrayList<Flower> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return FlowerViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
-        )
+        val root = LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
+        root.setOnClickListener {
+            val intent = Intent(root.context, FlowerDescActivity::class.java)
+            root.context.startActivity(intent)
+        }
+        return FlowerViewHolder(root)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
