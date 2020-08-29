@@ -18,8 +18,9 @@ import java.io.BufferedInputStream
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val REQUEST_CHOOSER = 1
 
-//    private lateinit var imgView: ImageView
+    //    private lateinit var imgView: ImageView
     private lateinit var btnCamera: ImageButton
+    private lateinit var btnHistory: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,29 +28,39 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         startActivity(Intent(this, SplashScreenActivity::class.java))
 
-        btnCamera = findViewById<ImageButton>(R.id.main_btn)
-//        imgView = findViewById<ImageView>(R.id.imgView)
+        btnCamera = findViewById(R.id.main_btn)
+        btnHistory = findViewById(R.id.history_btn)
 
         btnCamera.setOnClickListener(this)
+        btnHistory.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
-        val galleryIntent = Intent()
-        galleryIntent.type = "image/*"
-        galleryIntent.action = Intent.ACTION_PICK
+        when (p0?.id) {
+            (R.id.main_btn) -> {
+                val galleryIntent = Intent()
+                galleryIntent.type = "image/*"
+                galleryIntent.action = Intent.ACTION_PICK
 
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(packageManager)
+                val cameraIntent =
+                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                        takePictureIntent.resolveActivity(packageManager)
+                    }
+
+                val chooser = Intent(Intent.ACTION_CHOOSER)
+                chooser.putExtra(Intent.EXTRA_INTENT, galleryIntent)
+                chooser.putExtra(Intent.EXTRA_TITLE, "Выберите способ подгрузки картинки:")
+
+
+                val intentArray = arrayOf<Intent>(cameraIntent)
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                startActivityForResult(chooser, REQUEST_CHOOSER)
+            }
+
+            (R.id.history_btn) -> {
+                startActivity(Intent(this, HistoryActivity::class.java))
+            }
         }
-
-        val chooser = Intent(Intent.ACTION_CHOOSER)
-        chooser.putExtra(Intent.EXTRA_INTENT, galleryIntent)
-        chooser.putExtra(Intent.EXTRA_TITLE, "Выберите способ подгрузки картинки:")
-
-
-        val intentArray = arrayOf<Intent>(cameraIntent)
-        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-        startActivityForResult(chooser, REQUEST_CHOOSER)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
