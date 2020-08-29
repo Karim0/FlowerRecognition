@@ -17,10 +17,11 @@
         <ImageView
             android:id="@+id/cardImage"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:scaleType="fitCenter"
             android:src="@drawable/card1"
-            tools:ignore="ContentDescription,MissingConstraints" />
+            tools:ignore="ContentDescription,MissingConstraints"
+            android:adjustViewBounds="true"/>
 
         <TextView
             android:id="@+id/flower_title"
