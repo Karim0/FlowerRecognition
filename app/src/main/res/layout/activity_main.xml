@@ -55,12 +55,12 @@
 
         <ImageButton
             android:id="@+id/history_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/todo"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/clock" />
+            android:src="@drawable/ic_baseline_history_48" />
 
         <View
             android:id="@+id/view2"
@@ -74,7 +74,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/todo"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/settings__1_" />
+            android:src="@drawable/ic_baseline_settings_48" />
 
     </LinearLayout>
 

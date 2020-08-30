@@ -1,4 +1,4 @@
-package com.example.myapplication.Entities
+package com.ks.flowerrecognition.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -16,10 +16,7 @@ class FlowerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: ArrayList<Flower> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val root = LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
-        root.setOnClickListener {
-            val intent = Intent(root.context, FlowerDescActivity::class.java)
-            root.context.startActivity(intent)
-        }
+
         return FlowerViewHolder(root)
     }
 
@@ -46,11 +43,20 @@ class FlowerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     class FlowerViewHolder constructor(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
+        val root = itemView
         val flowerImage = itemView.findViewById<ImageView>(R.id.cardImage)
         val flowerTitle = itemView.findViewById<TextView>(R.id.flower_title)
 
         fun bind(card: Flower) {
-            flowerTitle.text = card.flowerName
+            flowerTitle.text = card.name
+            root.setOnClickListener {
+                val intent = Intent(root.context, FlowerDescActivity::class.java)
+                intent.putExtra("title", card.name)
+                intent.putExtra("id", card.id)
+                intent.putExtra("desc", card.desc)
+                intent.putExtra("image", card.image)
+                root.context.startActivity(intent)
+            }
         }
     }
 }
