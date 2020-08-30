@@ -1,4 +1,4 @@
-package com.ks.androidTest.java.com.ks.flowerrecognition
+package com.ks.flowerrecognition
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
