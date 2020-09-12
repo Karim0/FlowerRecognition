@@ -12,6 +12,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import java.io.BufferedInputStream
 
 
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     //    private lateinit var imgView: ImageView
     private lateinit var btnCamera: ImageButton
     private lateinit var btnHistory: ImageButton
+    private lateinit var requestHandler: RequestHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         btnCamera.setOnClickListener(this)
         btnHistory.setOnClickListener(this)
+
+//        requestHandler = RequestHandler("192.168.1.5:8000", Volley.newRequestQueue(this))
+        requestHandler = RequestHandler("http://37.151.172.141:8000", Volley.newRequestQueue(this))
     }
 
     override fun onClick(p0: View?) {
@@ -55,6 +61,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val intentArray = arrayOf<Intent>(cameraIntent)
                 chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
                 startActivityForResult(chooser, REQUEST_CHOOSER)
+//                requestHandler.getFlowerById(1) { response ->
+//                    Log.i("MyLogs", response.toString())
+//                }
             }
 
             (R.id.history_btn) -> {
@@ -70,14 +79,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 REQUEST_CHOOSER -> {
                     try {
                         if (data?.scheme != null) {
-                            val bis = contentResolver.openInputStream(data.data!!)
-//                            imgView.setImageBitmap(
-//                                BitmapFactory.decodeStream(
-//                                    BufferedInputStream(
-//                                        bis
-//                                    )
-//                                )
-//                            )
+                            val bis = BitmapFactory.decodeStream(
+                                BufferedInputStream(
+                                    contentResolver.openInputStream(data.data!!)!!
+                                )
+                            )
+                            requestHandler.flowerRecognize(
+                                bis
+                            ) { response -> Log.i("MyLogs", response.toString()) }
                         } else {
                             val imageBitmap = data?.extras?.get("data") as Bitmap
 //                            imgView.setImageBitmap(imageBitmap)
