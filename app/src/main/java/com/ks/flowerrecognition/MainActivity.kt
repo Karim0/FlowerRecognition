@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.RequestQueue
+import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.BufferedInputStream
 
 
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnHistory.setOnClickListener(this)
 
 //        requestHandler = RequestHandler("192.168.1.5:8000", Volley.newRequestQueue(this))
-        requestHandler = RequestHandler("http://37.151.172.141:8000", Volley.newRequestQueue(this))
+        requestHandler = RequestHandler("http://192.168.1.5:8000", Volley.newRequestQueue(this))
     }
 
     override fun onClick(p0: View?) {
@@ -84,9 +84,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                                     contentResolver.openInputStream(data.data!!)!!
                                 )
                             )
-                            requestHandler.flowerRecognize(
-                                bis
-                            ) { response -> Log.i("MyLogs", response.toString()) }
+//                            Toast.makeText(this, "photo taken", Toast.LENGTH_LONG).show()
+                            requestHandler.flowerRecognize(bis,
+                                { response ->
+                                    try {
+                                        val obj = JSONObject(String(response.data))
+                                        Toast.makeText(this, obj.toString(), Toast.LENGTH_LONG).show()
+                                    } catch (e: JSONException) {
+                                        e.printStackTrace()
+                                    }
+                                }, this)
+
                         } else {
                             val imageBitmap = data?.extras?.get("data") as Bitmap
 //                            imgView.setImageBitmap(imageBitmap)
