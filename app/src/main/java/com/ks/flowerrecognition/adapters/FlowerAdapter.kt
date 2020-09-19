@@ -50,11 +50,12 @@ class FlowerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun bind(card: Flower) {
             flowerTitle.text = card.name
             root.setOnClickListener {
-                val intent = Intent(root.context, FlowerDescActivity::class.java)
-                intent.putExtra("title", card.name)
-                intent.putExtra("id", card.id)
-                intent.putExtra("desc", card.desc)
-                intent.putExtra("image", card.image)
+                val intent = Intent(root.context, FlowerDescActivity::class.java).apply {
+                    putExtra("title", card.name)
+                    putExtra("id", card.id)
+                    putExtra("desc", card.desc)
+                    putExtra("image", card.image)
+                }
                 root.context.startActivity(intent)
             }
         }

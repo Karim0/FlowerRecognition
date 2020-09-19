@@ -1,5 +1,6 @@
 package com.ks.flowerrecognition
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,8 +11,8 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Response
 import com.android.volley.toolbox.Volley
+import com.ks.flowerrecognition.entities.Flower
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedInputStream
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var btnCamera: ImageButton
     private lateinit var btnHistory: ImageButton
     private lateinit var requestHandler: RequestHandler
+    private lateinit var dialog: ProgressDialog
+    private lateinit var db: Database
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 //        requestHandler = RequestHandler("192.168.1.5:8000", Volley.newRequestQueue(this))
         requestHandler = RequestHandler("http://192.168.1.5:8000", Volley.newRequestQueue(this))
+        dialog = ProgressDialog(this, ProgressDialog.THEME_DEVICE_DEFAULT_LIGHT)
+        dialog.setTitle("Sending photo")
+        dialog.setMessage("Loading")
+
+
+        db = Database(this)
     }
 
     override fun onClick(p0: View?) {
@@ -78,6 +87,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             when (requestCode) {
                 REQUEST_CHOOSER -> {
                     try {
+                        dialog.show()
                         if (data?.scheme != null) {
                             val bis = BitmapFactory.decodeStream(
                                 BufferedInputStream(
@@ -85,19 +95,74 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                                 )
                             )
 //                            Toast.makeText(this, "photo taken", Toast.LENGTH_LONG).show()
-                            requestHandler.flowerRecognize(bis,
+
+//                            val dialog = ProgressDialog.show(this, "Title", "Loading")
+                            requestHandler.flowerRecognize(
+                                bis,
                                 { response ->
                                     try {
-                                        val obj = JSONObject(String(response.data))
-                                        Toast.makeText(this, obj.toString(), Toast.LENGTH_LONG).show()
+                                        val id =
+                                            JSONObject(String(response.data))["flower_id"] as Int
+                                        requestHandler.getFlowerById(id) {
+                                            val intent =
+                                                Intent(this, FlowerDescActivity::class.java).apply {
+                                                    putExtra("title", it["name"].toString())
+                                                    putExtra("id", id)
+                                                    putExtra("desc", it["desc"].toString())
+                                                    putExtra("image", "")
+                                                }
+
+                                            startActivity(intent)
+                                            db.addFlower(
+                                                Flower(
+                                                    id,
+                                                    it["name"].toString(),
+                                                    it["desc"].toString(),
+                                                    ""
+                                                )
+                                            )
+                                            dialog.hide()
+                                        }
                                     } catch (e: JSONException) {
                                         e.printStackTrace()
                                     }
-                                }, this)
+                                }, this
+                            )
 
                         } else {
                             val imageBitmap = data?.extras?.get("data") as Bitmap
-//                            imgView.setImageBitmap(imageBitmap)
+                            requestHandler.flowerRecognize(
+                                imageBitmap,
+                                { response ->
+                                    try {
+                                        val id =
+                                            JSONObject(String(response.data))["flower_id"] as Int
+                                        requestHandler.getFlowerById(id) {
+                                            val intent =
+                                                Intent(this, FlowerDescActivity::class.java).apply {
+                                                    putExtra("title", it["name"].toString())
+                                                    putExtra("id", id)
+                                                    putExtra("desc", it["desc"].toString())
+                                                    putExtra("image", "")
+                                                }
+
+                                            startActivity(intent)
+                                            db.addFlower(
+                                                Flower(
+                                                    id,
+                                                    it["name"].toString(),
+                                                    it["desc"].toString(),
+                                                    ""
+                                                )
+                                            )
+                                            dialog.hide()
+                                        }
+
+                                    } catch (e: JSONException) {
+                                        e.printStackTrace()
+                                    }
+                                }, this
+                            )
                         }
 
                     } catch (e: Exception) {
