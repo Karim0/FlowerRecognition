@@ -1,10 +1,11 @@
-package com.ks.flowerrecognition
+package com.ks.flowerrecognition.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ks.flowerrecognition.database.Database
+import com.ks.flowerrecognition.R
 import com.ks.flowerrecognition.adapters.FlowerAdapter
-import com.ks.flowerrecognition.entities.Flower
 import kotlinx.android.synthetic.main.activity_history.*
 
 class HistoryActivity : AppCompatActivity() {

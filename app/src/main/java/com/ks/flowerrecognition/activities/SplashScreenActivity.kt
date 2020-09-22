@@ -1,9 +1,9 @@
-package com.ks.flowerrecognition
+package com.ks.flowerrecognition.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.ks.flowerrecognition.R
 
 class SplashScreenActivity : AppCompatActivity() {
     private var handler: Handler = Handler()

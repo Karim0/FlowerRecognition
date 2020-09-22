@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.ks.flowerrecognition.FlowerDescActivity
+import com.ks.flowerrecognition.activities.FlowerDescActivity
 import com.ks.flowerrecognition.R
 import com.ks.flowerrecognition.entities.Flower
 

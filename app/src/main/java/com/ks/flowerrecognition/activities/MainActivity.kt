@@ -1,25 +1,37 @@
-package com.ks.flowerrecognition
+package com.ks.flowerrecognition.activities
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.android.volley.toolbox.Volley
+import com.ks.flowerrecognition.R
+import com.ks.flowerrecognition.database.Database
 import com.ks.flowerrecognition.entities.Flower
+import com.ks.flowerrecognition.helper.RequestHandler
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedInputStream
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val REQUEST_CHOOSER = 1
+    private var mCurrentPhotoPath = ""
 
     //    private lateinit var imgView: ImageView
     private lateinit var btnCamera: ImageButton
@@ -46,7 +58,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         dialog.setTitle("Sending photo")
         dialog.setMessage("Loading")
 
-
         db = Database(this)
     }
 
@@ -60,7 +71,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val cameraIntent =
                     Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
                         takePictureIntent.resolveActivity(packageManager)
+                        takePictureIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024000)
                     }
+                var photoFile: File? = null
+                try {
+                    photoFile = createImageFile()
+                } catch (ex: Exception) {
+
+                }
+
+                if (photoFile != null) {
+                    val photoURI = Uri.fromFile(photoFile)
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                }
+
 
                 val chooser = Intent(Intent.ACTION_CHOOSER)
                 chooser.putExtra(Intent.EXTRA_INTENT, galleryIntent)
@@ -70,9 +94,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val intentArray = arrayOf<Intent>(cameraIntent)
                 chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
                 startActivityForResult(chooser, REQUEST_CHOOSER)
-//                requestHandler.getFlowerById(1) { response ->
-//                    Log.i("MyLogs", response.toString())
-//                }
             }
 
             (R.id.history_btn) -> {
@@ -89,14 +110,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     try {
                         dialog.show()
                         if (data?.scheme != null) {
-                            val bis = BitmapFactory.decodeStream(
-                                BufferedInputStream(
-                                    contentResolver.openInputStream(data.data!!)!!
-                                )
+                            val bis = Bitmap.createScaledBitmap(
+                                BitmapFactory.decodeStream(
+                                    BufferedInputStream(
+                                        contentResolver.openInputStream(
+                                            data.data!!
+                                        )!!
+                                    )
+                                ), 310, 310, true
                             )
-//                            Toast.makeText(this, "photo taken", Toast.LENGTH_LONG).show()
 
-//                            val dialog = ProgressDialog.show(this, "Title", "Loading")
                             requestHandler.flowerRecognize(
                                 bis,
                                 { response ->
@@ -105,7 +128,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                                             JSONObject(String(response.data))["flower_id"] as Int
                                         requestHandler.getFlowerById(id) {
                                             val intent =
-                                                Intent(this, FlowerDescActivity::class.java).apply {
+                                                Intent(
+                                                    this,
+                                                    FlowerDescActivity::class.java
+                                                ).apply {
                                                     putExtra("title", it["name"].toString())
                                                     putExtra("id", id)
                                                     putExtra("desc", it["desc"].toString())
@@ -130,7 +156,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             )
 
                         } else {
-                            val imageBitmap = data?.extras?.get("data") as Bitmap
+//                            val file: File = File(mCurrentPhotoPath)
+                            val imageBitmap = Bitmap.createScaledBitmap(
+                                BitmapFactory.decodeFile(mCurrentPhotoPath),
+                                310,
+                                310,
+                                true
+                            )
+                            Log.i("myLogs", imageBitmap.width.toString())
+
                             requestHandler.flowerRecognize(
                                 imageBitmap,
                                 { response ->
@@ -139,7 +173,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                                             JSONObject(String(response.data))["flower_id"] as Int
                                         requestHandler.getFlowerById(id) {
                                             val intent =
-                                                Intent(this, FlowerDescActivity::class.java).apply {
+                                                Intent(
+                                                    this,
+                                                    FlowerDescActivity::class.java
+                                                ).apply {
                                                     putExtra("title", it["name"].toString())
                                                     putExtra("id", id)
                                                     putExtra("desc", it["desc"].toString())
@@ -173,5 +210,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File? {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val imageFileName = "JPEG_" + timeStamp + "_"
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image: File = File.createTempFile(
+            imageFileName,
+            ".jpg",
+            storageDir
+        )
+
+        mCurrentPhotoPath = image.getAbsolutePath()
+        return image
     }
 }

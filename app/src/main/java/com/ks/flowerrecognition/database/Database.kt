@@ -1,4 +1,4 @@
-package com.ks.flowerrecognition
+package com.ks.flowerrecognition.database
 
 import android.annotation.SuppressLint
 import android.content.ContentValues

@@ -1,9 +1,9 @@
-package com.ks.flowerrecognition
+package com.ks.flowerrecognition.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
+import com.ks.flowerrecognition.R
 
 class FlowerDescActivity : AppCompatActivity() {
 

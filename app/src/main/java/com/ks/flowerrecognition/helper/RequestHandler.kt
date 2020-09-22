@@ -1,4 +1,4 @@
-package com.ks.flowerrecognition
+package com.ks.flowerrecognition.helper
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,7 +11,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 
