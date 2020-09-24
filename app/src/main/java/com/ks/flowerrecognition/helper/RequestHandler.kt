@@ -32,6 +32,18 @@ class RequestHandler(
         queue.add(req)
     }
 
+    fun getPhotosByFlowerId(id: Int, response: Response.Listener<JSONObject>) {
+//        val myJS = JSONObject()
+//        myJS.put("pk", id)
+        val url = "$URL/flower-api/flower_photos_by_id?pk=$id"
+        val req = JsonObjectRequest(Request.Method.GET, url, null,
+            response, {
+                Log.d("ServerError", "Server didn't response!!")
+            })
+
+        queue.add(req)
+    }
+
     fun getAllFlowers(response: Response.Listener<JSONArray>) {
         val myJS = JSONArray()
 

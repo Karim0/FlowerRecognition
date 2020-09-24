@@ -28,14 +28,25 @@
                 android:textColor="@android:color/black"
                 android:textSize="14pt" />
 
-            <ImageView
-                android:id="@+id/desc_flower_image"
+            <com.synnapps.carouselview.CarouselView
+                android:id="@+id/pager_images"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/card1" />
+                android:layout_height="250dp"
+                app:fillColor="#FFFFFFFF"
+                app:pageColor="#00000000"
+                app:radius="6dp"
+                app:slideInterval="3000"
+                app:strokeColor="#FF777777">
+
+            </com.synnapps.carouselview.CarouselView>
+            <!--            <ImageView-->
+            <!--                android:id="@+id/desc_flower_image"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="8dp"-->
+            <!--                android:adjustViewBounds="true"-->
+            <!--                android:scaleType="fitCenter"-->
+            <!--                android:src="@drawable/card1" />-->
 
             <!--            <TextView-->
             <!--                android:layout_width="match_parent"-->
@@ -50,9 +61,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:paddingLeft="8dp"
                 android:paddingTop="0dp"
                 android:paddingRight="8dp"
-                android:paddingLeft="8dp"
                 android:text="sdasdasdsadas"
                 android:textColor="@android:color/black"
                 android:textSize="9pt" />
