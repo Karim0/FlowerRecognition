@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -31,6 +32,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val REQUEST_CHOOSER = 1
+    private val SPASH_RESULT = 2
     private var mCurrentPhotoPath = ""
 
     //    private lateinit var imgView: ImageView
@@ -44,7 +46,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startActivity(Intent(this, SplashScreenActivity::class.java))
+        try {
+            val s = getPreferences(MODE_PRIVATE)
+            if (s.getBoolean("isSplash", true)) startActivityForResult(
+                Intent(
+                    this,
+                    SplashScreenActivity::class.java
+                ), SPASH_RESULT
+            )
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
 
         btnCamera = findViewById(R.id.main_btn)
         btnHistory = findViewById(R.id.history_btn)
@@ -102,6 +114,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    @SuppressLint("CommitPrefEdits")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -208,7 +221,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
             }
+        }
 
+        if (requestCode == SPASH_RESULT && resultCode == RESULT_OK) {
+            val s = getPreferences(MODE_PRIVATE)
+            with(s.edit()) {
+                data?.getBooleanExtra("isSplash", true)?.let {
+                    putBoolean("isSplash", it)
+                    apply()
+                }
+            }
+//            data?.data.get
         }
     }
 

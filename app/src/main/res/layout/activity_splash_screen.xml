@@ -18,4 +18,13 @@
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Больше не показывать"
+        app:layout_constraintTop_toBottomOf="@+id/mainBrand"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="112dp"
+        android:id="@+id/splash_chbox"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
