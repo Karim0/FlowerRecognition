@@ -8,15 +8,16 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.ks.flowerrecognition.R
 import com.ks.flowerrecognition.database.Database
 import com.ks.flowerrecognition.entities.Flower
@@ -35,12 +36,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val SPASH_RESULT = 2
     private var mCurrentPhotoPath = ""
 
-    //    private lateinit var imgView: ImageView
     private lateinit var btnCamera: ImageButton
     private lateinit var btnHistory: ImageButton
     private lateinit var requestHandler: RequestHandler
     private lateinit var dialog: ProgressDialog
     private lateinit var db: Database
+    private lateinit var adBanner: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnCamera = findViewById(R.id.main_btn)
         btnHistory = findViewById(R.id.history_btn)
 
+        adBanner = findViewById(R.id.adView)
+
         btnCamera.setOnClickListener(this)
         btnHistory.setOnClickListener(this)
 
@@ -71,6 +74,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         dialog.setMessage("Loading")
 
         db = Database(this)
+
+        showBanner()
     }
 
     override fun onClick(p0: View?) {
@@ -250,5 +255,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         mCurrentPhotoPath = image.getAbsolutePath()
         return image
+    }
+
+
+    private fun showBanner() {
+        MobileAds.initialize(this) {}
+        val adRequest = AdRequest.Builder().build()
+        adBanner.loadAd(adRequest)
     }
 }

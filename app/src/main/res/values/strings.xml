@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flower recognising</string>
+    <string name="app_name">Petal</string>
     <string name="todo">TODO</string>
     <string name="button">Button</string>
     <string name="history">History</string>
@@ -7,4 +7,6 @@
     <string name="recognize_flower">Recognize flower</string>
     <string name="the_title_of_a_blog">The Title of a Blog</string>
     <string name="flower_name">Flower Name</string>
+    <string name="ad_app_id">ca-app-pub-1163990845092262~7700229615</string>
+    <string name="banner_id">ca-app-pub-1163990845092262/9202327786</string>
 </resources>

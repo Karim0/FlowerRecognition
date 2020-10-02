@@ -20,7 +20,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        findViewById<CheckBox>(R.id.splash_chbox).setOnCheckedChangeListener { p0, p1 ->
+        findViewById<CheckBox>(R.id.splash_chbox).setOnCheckedChangeListener { _, p1 ->
 //            applicationContext.getSharedPreferences("isSplash", (if (p1) 1 else 0).toInt())
             intent.putExtra("isSplash", !p1)
             setResult(RESULT_OK, intent);
